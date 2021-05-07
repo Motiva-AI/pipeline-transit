@@ -4,22 +4,22 @@
             [time-literals.data-readers]
             [time-literals.read-write]))
 
-(deftest write-transit-str-test
-  (is (= "[\"~#'\",\"foo\"]" (core/write-transit-str "foo")))
-  (is (= "[\"~#'\",\"~:foo\"]" (core/write-transit-str :foo)))
+(deftest write-transit-json-test
+  (is (= "[\"~#'\",\"foo\"]" (core/write-transit-json "foo")))
+  (is (= "[\"~#'\",\"~:foo\"]" (core/write-transit-json :foo)))
   (is (= "[\"~#joda-time\",\"2019-11-01T02:00:00.000Z\"]"
-         (core/write-transit-str (org.joda.time.DateTime. 2019 11 1 2 0 (org.joda.time.DateTimeZone/UTC)))))
+         (core/write-transit-json (org.joda.time.DateTime. 2019 11 1 2 0 (org.joda.time.DateTimeZone/UTC)))))
 
   (is (= "[\"~#time/date-time\",\"2019-11-01T02:00\"]"
-         (core/write-transit-str #time/date-time "2019-11-01T02:00")))
+         (core/write-transit-json #time/date-time "2019-11-01T02:00")))
   (is (= "[\"~#time/instant\",\"2019-11-01T02:00:00Z\"]"
-         (core/write-transit-str #time/instant "2019-11-01T02:00:00Z"))))
+         (core/write-transit-json #time/instant "2019-11-01T02:00:00Z"))))
 
-(deftest read-transit-str-test
-  (is (= :foo (core/read-transit-str "[\"~#'\",\"~:foo\"]"))))
+(deftest read-transit-json-test
+  (is (= :foo (core/read-transit-json "[\"~#'\",\"~:foo\"]"))))
 
 (deftest transit-round-trip-test
-  (are [coll] (= coll (core/read-transit-str (core/write-transit-str coll)))
+  (are [coll] (= coll (core/read-transit-json (core/write-transit-json coll)))
      "testing"
      [:foo 3 "c"]
      :foo

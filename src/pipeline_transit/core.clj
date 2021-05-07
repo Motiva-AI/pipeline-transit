@@ -58,12 +58,12 @@
     (write-transit o os)
     (.toByteArray os)))
 
-(defn write-transit-str ^String [o]
+(defn write-transit-json ^String [o]
   (String. (write-transit-bytes o) "UTF-8"))
 
 (defn read-transit [input-stream]
   (t/read (t/reader input-stream :json {:handlers read-handlers})))
 
-(defn read-transit-str [^String s]
+(defn read-transit-json [^String s]
   (read-transit (ByteArrayInputStream. (.getBytes s "UTF-8"))))
 
