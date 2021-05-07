@@ -6,7 +6,8 @@
   :repl-options {:init-ns pipeline-transit.core}
 
   :dependencies [[com.cognitect/transit-clj "1.0.324"]
-                 [tick "0.4.26-alpha"]]
+                 [joda-time/joda-time "2.9.3"]
+                 [time-literals "0.1.5"]]
 
     :profiles {:dev {:source-paths ["src" "dev/src"]
                    ;; "test" is included by default - adding it here confuses
@@ -15,6 +16,4 @@
                    :resource-paths ["dev/resources"]
 
                    :dependencies [[org.clojure/clojure "1.10.3"]
-                                  [circleci/circleci.test "0.5.0"]]}
-
-             :provided {:dependencies [[clj-time "0.15.2"]]}})
+                                  [circleci/circleci.test "0.5.0"]]}})

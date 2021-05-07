@@ -40,7 +40,7 @@
           (for [[tick-class host-class] time-classes]
             [host-class (t/write-handler (constantly (name tick-class)) str)]))
 
-    {org.joda.time.DateTime (t/write-handler "joda-time" (fn [v] (str v)))}))
+    {org.joda.time.DateTime (t/write-handler "joda-time" str)}))
 
 (def ^:private read-handlers
   (merge
