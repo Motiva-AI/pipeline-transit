@@ -10,9 +10,9 @@
   (is (= "[\"~#joda-time\",\"2019-11-01T02:00:00.000Z\"]"
          (core/write-transit-str (org.joda.time.DateTime. 2019 11 1 2 0 (org.joda.time.DateTimeZone/UTC)))))
 
-  (is (= "[\"~#date-time\",\"2019-11-01T02:00\"]"
+  (is (= "[\"~#time/date-time\",\"2019-11-01T02:00\"]"
          (core/write-transit-str #time/date-time "2019-11-01T02:00")))
-  (is (= "[\"~#instant\",\"2019-11-01T02:00:00Z\"]"
+  (is (= "[\"~#time/instant\",\"2019-11-01T02:00:00Z\"]"
          (core/write-transit-str #time/instant "2019-11-01T02:00:00Z"))))
 
 (deftest read-transit-str-test

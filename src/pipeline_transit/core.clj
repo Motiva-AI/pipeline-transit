@@ -38,7 +38,7 @@
   (merge
     (into {}
           (for [[tick-class host-class] time-classes]
-            [host-class (t/write-handler (constantly (name tick-class)) str)]))
+            [host-class (t/write-handler (str "time/" (name tick-class)) str)]))
 
     {org.joda.time.DateTime (t/write-handler "joda-time" str)}))
 
@@ -46,7 +46,7 @@
   (merge
     (into {}
           (for [[sym fun] time-literals.read-write/tags]
-            [(name sym) (t/read-handler fun)])) ; omit "time/" for brevity
+            [(str "time/" (name sym)) (t/read-handler fun)]))
 
     {"joda-time" (t/read-handler (fn [r] (org.joda.time.DateTime/parse r)))}))
 
