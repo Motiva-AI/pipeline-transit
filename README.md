@@ -1,6 +1,8 @@
 # pipeline-transit
 
-Transit handlers for use by other Motiva pipeline libraries
+[![Clojars Project](https://img.shields.io/clojars/v/ai.motiva/pipeline-transit.svg)](https://clojars.org/ai.motiva/pipeline-transit)
+
+This is a convenience library containing Transit handlers. It is used by other Motiva pipeline libraries.
 
 ## Usage
 
