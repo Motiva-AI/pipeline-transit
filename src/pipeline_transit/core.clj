@@ -1,5 +1,5 @@
 (ns pipeline-transit.core
-  (:require [cognitect.transit :as transit]
+  (:require [cognitect.transit :as t]
             [time-literals.read-write])
   (:import [java.io ByteArrayOutputStream ByteArrayInputStream]
            [java.time
@@ -35,34 +35,35 @@
    'month            Month})
 
 (def ^:private write-handlers
-  {:handlers
-   (-> (into {}
-             (for [[tick-class host-class] time-classes]
-               [host-class (transit/write-handler (constantly (name tick-class)) str)]))
-       (assoc org.joda.time.DateTime
-              (transit/write-handler "joda-time" (fn [v] (str v)))))})
+  (merge
+    (into {}
+          (for [[tick-class host-class] time-classes]
+            [host-class (t/write-handler (constantly (name tick-class)) str)]))
+
+    {org.joda.time.DateTime (t/write-handler "joda-time" (fn [v] (str v)))}))
 
 (def ^:private read-handlers
-  {:handlers
-   (-> (into {} (for [[sym fun] time-literals.read-write/tags]
-              [(name sym) (transit/read-handler fun)])) ; omit "time/" for brevity
-       (assoc "joda-time"
-              (transit/read-handler (fn [r] (org.joda.time.DateTime/parse r)))))})
+  (merge
+    (into {}
+          (for [[sym fun] time-literals.read-write/tags]
+            [(name sym) (t/read-handler fun)])) ; omit "time/" for brevity
 
-(defn transit-write
-  [x]
-  (let [baos   (ByteArrayOutputStream.)
-        writer (transit/writer baos :json write-handlers)
-        _      (transit/write writer x)
-        return (.toString baos)]
-    (.reset baos)
-    return))
+    {"joda-time" (t/read-handler (fn [r] (org.joda.time.DateTime/parse r)))}))
 
-(defn transit-read
-  [json]
-  (when json
-    (-> (.getBytes json)
-        (ByteArrayInputStream.)
-        (transit/reader :json read-handlers)
-        (transit/read))))
+(defn write-transit [coll output-stream]
+  (t/write (t/writer output-stream :json {:handlers write-handlers}) coll))
+
+(defn write-transit-bytes ^bytes [o]
+  (let [os (ByteArrayOutputStream.)]
+    (write-transit o os)
+    (.toByteArray os)))
+
+(defn write-transit-str ^String [o]
+  (String. (write-transit-bytes o) "UTF-8"))
+
+(defn read-transit [input-stream]
+  (t/read (t/reader input-stream :json {:handlers read-handlers})))
+
+(defn read-transit-str [^String s]
+  (read-transit (ByteArrayInputStream. (.getBytes s "UTF-8"))))
 
